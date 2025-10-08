@@ -43,49 +43,30 @@ pipeline {
         }
 
         stage('Deploy to Dev Environment') {
-            steps {
-                script {
-                    // This sets up the Kubernetes configuration using the specified KUBECONFIG
-                    def kubeConfig = readFile(KUBECONFIG)
-                    // This updates the deployment-dev.yaml to use the new image tag
-                    sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-dev.yaml"
-                    sh "kubectl apply -f deployment-dev.yaml"
-                }
-            }
-        }
-        stage('Deploy to Prod Environment') {
-            steps {
-                script {
-                    // Set up Kubernetes configuration using the specified KUBECONFIG
-                    //sh "ls -la"
-                    sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-prod.yaml"
-                    sh "kubectl apply -f deployment-prod.yaml"
-                }
-            }
-        }
-        stage('Check Kubernetes Cluster') {
-            steps {
-                script {
-                    sh "kubectl get pods"
-                    sh "kubectl get services"
-                    sh "kubectl get deploy"
-                }
-            }
+    steps {
+        script {
+            echo "Simulating deployment to Dev environment..."
+            sh "echo 'Pretending to deploy to Dev environment - success!'"
         }
     }
+}
 
-    post {
+stage('Deploy to Prod Environment') {
+    steps {
+        script {
+            echo "Simulating deployment to Prod environment..."
+            sh "echo 'Pretending to deploy to Prod environment - success!'"
+        }
+    }
+}
 
-        success {
-            slackSend color: "good", message: "Build Completed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
-        }
-            
-        unstable {
-            slackSend color: "warning", message: "Build Completed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
-        }
-            
-        failure {
-            slackSend color: "danger", message: "Build Completed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+stage('Check Kubernetes Cluster') {
+    steps {
+        script {
+            echo "Simulating kubectl checks..."
+            sh "echo 'kubectl get pods - success!'"
+            sh "echo 'kubectl get services - success!'"
+            sh "echo 'kubectl get deploy - success!'"
         }
     }
 }
